@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-brutal-pink: #FF007F;
+  --color-brutal-cyan: #00FFFF;
+  --color-brutal-yellow: #FFFF00;
+  --color-brutal-black: #000000;
+  --color-brutal-white: #FFFFFF;
+
+  --shadow-brutal: 8px 8px 0 0 #000000;
+  --shadow-brutal-sm: 4px 4px 0 0 #000000;
+  --shadow-brutal-lg: 12px 12px 0 0 #000000;
+}
+
+:root {
+  --background: var(--color-brutal-white);
+  --foreground: var(--color-brutal-black);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  /* A subtle dotted pattern for that brutalist feel */
+  background-image: radial-gradient(var(--color-brutal-black) 1px, transparent 0);
+  background-size: 20px 20px;
+  background-position: -10px -10px;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  overflow: hidden; /* Prevent scrolling for the PWA fullscreen feel */
+  overscroll-behavior: none; /* Prevent pull-to-refresh */
+}
+
+/* Base styles for PWA feel */
+* {
+  user-select: none;
+  -webkit-user-drag: none;
+  touch-action: none; /* Disable browser zooming and panning */
+}
+
+input {
+  user-select: auto;
+  touch-action: auto;
+}
