@@ -58,8 +58,8 @@ export function PinEntry({ onJoin, isDarkMode }: PinEntryProps) {
           disabled={pin.length !== 4}
           className={`w-full py-6 text-3xl font-black uppercase border-4 transition-all active:translate-y-2 active:translate-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${
             isDarkMode
-              ? 'border-white bg-[#0000FF] text-white shadow-[8px_8px_0_0_#FFFFFF] active:shadow-[0_0_0_0_#FFFFFF] disabled:bg-gray-800'
-              : 'border-black bg-[#0000FF] text-white shadow-[8px_8px_0_0_#000000] active:shadow-[0_0_0_0_#000000] disabled:bg-gray-300'
+              ? 'border-white bg-[#00FFFF] text-black shadow-[8px_8px_0_0_#FFFFFF] active:shadow-[0_0_0_0_#FFFFFF] disabled:bg-gray-800'
+              : 'border-black bg-[#00FFFF] text-black shadow-[8px_8px_0_0_#000000] active:shadow-[0_0_0_0_#000000] disabled:bg-gray-300'
           }`}
         >
           Connect

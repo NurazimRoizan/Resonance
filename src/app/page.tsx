@@ -7,14 +7,24 @@ import { useResonance } from '@/hooks/useResonance';
 
 export default function Home() {
   const [pin, setPin] = useState<string | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const { myState, partnerState, isConnected, updateColor, sendNudge } = useResonance(pin);
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').catch(console.error);
     }
+    const saved = localStorage.getItem('theme');
+    if (saved) {
+      setIsDarkMode(saved === 'dark');
+    }
   }, []);
+
+  const toggleTheme = () => {
+    const next = !isDarkMode;
+    setIsDarkMode(next);
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+  };
 
   const getPartnerBgColor = () => {
     if (partnerState.color === 'neutral') {
@@ -35,7 +45,7 @@ export default function Home() {
       style={pin && partnerState.color !== 'neutral' ? { backgroundColor: getPartnerBgColor() } : {}}
     >
       <button 
-        onClick={() => setIsDarkMode(!isDarkMode)}
+        onClick={toggleTheme}
         className={`absolute top-6 right-6 font-black uppercase text-xs tracking-widest px-4 py-2 border-4 transition-all active:translate-y-1 active:translate-x-1 z-50 ${
           isDarkMode 
             ? 'bg-black text-white border-white shadow-[4px_4px_0_0_#FFF] active:shadow-[0_0_0_0_#FFF]' 

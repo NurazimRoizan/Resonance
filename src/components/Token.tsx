@@ -87,7 +87,7 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
         }}
         className={`w-64 h-64 md:w-80 md:h-80 rounded-full border-[8px] cursor-grab active:cursor-grabbing active:scale-95 transition-colors duration-300 flex items-center justify-center relative z-10 ${
           isDarkMode 
-            ? 'border-white shadow-[16px_16px_0_0_#FFFFFF]' 
+            ? 'border-white shadow-[16px_16px_0_0_#808080]' 
             : 'border-black shadow-[16px_16px_0_0_#000000]'
         }`}
       >
