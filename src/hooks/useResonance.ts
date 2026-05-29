@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 
-export type ResonanceColor = 'white' | 'pink' | 'cyan' | 'yellow';
+export type ResonanceColor = 'neutral' | 'white' | 'pink' | 'cyan' | 'yellow';
 
 export interface ResonanceState {
   color: ResonanceColor;
@@ -9,8 +9,8 @@ export interface ResonanceState {
 }
 
 export function useResonance(pin: string | null) {
-  const [partnerState, setPartnerState] = useState<ResonanceState>({ color: 'white', lastNudge: null });
-  const [myState, setMyState] = useState<ResonanceState>({ color: 'white', lastNudge: null });
+  const [partnerState, setPartnerState] = useState<ResonanceState>({ color: 'neutral', lastNudge: null });
+  const [myState, setMyState] = useState<ResonanceState>({ color: 'neutral', lastNudge: null });
   const [isConnected, setIsConnected] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [channel, setChannel] = useState<any>(null);
@@ -39,7 +39,7 @@ export function useResonance(pin: string | null) {
       })
       .on('broadcast', { event: 'request_state' }, () => {
         // When partner asks for state (e.g. they just joined), we broadcast our current state
-        if (myState.color !== 'white') {
+        if (myState.color !== 'neutral') {
            roomChannel.send({
             type: 'broadcast',
             event: 'state_update',

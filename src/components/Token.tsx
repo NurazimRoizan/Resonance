@@ -9,16 +9,22 @@ interface TokenProps {
   partnerLastNudge: number | null;
   onColorChange: (color: ResonanceColor) => void;
   onNudge: () => void;
+  isDarkMode: boolean;
 }
 
-const colorMap: Record<ResonanceColor, string> = {
-  white: '#FFFFFF',
-  pink: '#FF007F',
-  cyan: '#00FFFF',
-  yellow: '#FFFF00',
-};
-
-export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge }: TokenProps) {
+export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, isDarkMode }: TokenProps) {
+  const getTokenColor = () => {
+    if (currentColor === 'neutral') {
+      return isDarkMode ? '#FFFFFF' : '#171717';
+    }
+    const colorMap: Record<string, string> = {
+      white: '#FFFFFF',
+      pink: '#FF007F',
+      cyan: '#00FFFF',
+      yellow: '#FFFF00',
+    };
+    return colorMap[currentColor];
+  };
   const controls = useAnimation();
   const prevNudge = useRef(partnerLastNudge);
 
@@ -77,14 +83,18 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge }
         onDoubleClick={handleDoubleClick}
         animate={controls}
         style={{
-          backgroundColor: colorMap[currentColor],
+          backgroundColor: getTokenColor(),
         }}
-        className="w-64 h-64 md:w-80 md:h-80 rounded-full border-[8px] border-black shadow-[16px_16px_0_0_#000000] cursor-grab active:cursor-grabbing active:scale-95 transition-colors duration-300 flex items-center justify-center relative z-10"
+        className={`w-64 h-64 md:w-80 md:h-80 rounded-full border-[8px] cursor-grab active:cursor-grabbing active:scale-95 transition-colors duration-300 flex items-center justify-center relative z-10 ${
+          isDarkMode 
+            ? 'border-white shadow-[16px_16px_0_0_#FFFFFF]' 
+            : 'border-black shadow-[16px_16px_0_0_#000000]'
+        }`}
       >
       </motion.div>
       
       {/* Instructions overlaid faintly */}
-      <div className="absolute bottom-12 left-0 right-0 text-center text-sm md:text-base font-black tracking-widest uppercase opacity-30 pointer-events-none z-0">
+      <div className={`absolute bottom-12 left-0 right-0 text-center text-sm md:text-base font-black tracking-widest uppercase opacity-30 pointer-events-none z-0 ${(!isDarkMode && currentColor === 'neutral') ? 'text-white' : 'text-black'}`}>
         Drag to snap color &bull; Double tap to nudge
       </div>
     </div>
