@@ -1,14 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { PinEntry } from '@/components/PinEntry';
 import { Token } from '@/components/Token';
 import { useResonance } from '@/hooks/useResonance';
+import { motion, useAnimation } from 'framer-motion';
 
 export default function Home() {
   const [pin, setPin] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const { myState, partnerState, isConnected, updateColor, sendNudge } = useResonance(pin);
+  const bgControls = useAnimation();
+  const prevMyColor = useRef(myState.color);
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -26,6 +29,36 @@ export default function Home() {
     localStorage.setItem('theme', next ? 'dark' : 'light');
   };
 
+  // Trigger background animations when MY color changes (dragging)
+  useEffect(() => {
+    if (myState.color !== prevMyColor.current) {
+      const newColor = myState.color;
+      prevMyColor.current = newColor;
+
+      if (newColor === 'pink') {
+        bgControls.start({
+          scale: [1, 1.05, 1],
+          transition: { type: 'spring', stiffness: 300 },
+        });
+      } else if (newColor === 'cyan') {
+        bgControls.start({
+          y: [0, 15, 0],
+          transition: { duration: 1.0, ease: 'easeInOut' },
+        });
+      } else if (newColor === 'white') {
+        bgControls.start({
+          x: [0, -15, 15, -10, 10, 0],
+          transition: { duration: 0.3 },
+        });
+      } else if (newColor === 'yellow') {
+        bgControls.start({
+          rotate: [0, -2, 2, -1, 1, 0],
+          transition: { duration: 0.4 },
+        });
+      }
+    }
+  }, [myState.color, bgControls]);
+
   const getPartnerBgColor = () => {
     if (partnerState.color === 'neutral') {
       return isDarkMode ? '#000000' : '#FFFFFF';
@@ -40,7 +73,8 @@ export default function Home() {
   };
 
   return (
-    <main 
+    <motion.main 
+      animate={bgControls}
       className={`w-screen h-screen flex flex-col items-center justify-center transition-colors duration-500 relative ${isDarkMode ? 'bg-black text-white' : 'bg-white text-black'}`}
       style={pin && partnerState.color !== 'neutral' ? { backgroundColor: getPartnerBgColor() } : {}}
     >
@@ -76,6 +110,6 @@ export default function Home() {
           />
         </>
       )}
-    </main>
+    </motion.main>
   );
 }

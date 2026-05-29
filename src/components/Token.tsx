@@ -25,6 +25,7 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
     };
     return colorMap[currentColor];
   };
+
   const controls = useAnimation();
   const prevNudge = useRef(partnerLastNudge);
 
@@ -32,10 +33,11 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
   useEffect(() => {
     if (partnerLastNudge && partnerLastNudge !== prevNudge.current) {
       prevNudge.current = partnerLastNudge;
-      // Violent pop animation
+      // "The Heartbeat Wobble" for incoming nudge
       controls.start({
-        scale: [1, 1.5, 0.9, 1.1, 1],
-        transition: { type: 'spring', stiffness: 500, damping: 15, mass: 1 },
+        scale: [1, 1.4, 0.9, 1.2, 1],
+        rotate: [0, -15, 15, -10, 10, 0],
+        transition: { type: 'spring', stiffness: 500, damping: 12, mass: 1 },
       });
     }
   }, [partnerLastNudge, controls]);
@@ -48,28 +50,54 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
       // Horizontal drag
       if (offset.x > threshold) {
         onColorChange('yellow'); // Right = Yellow
+        controls.start({
+          x: [offset.x, -20, 20, -15, 15, 0],
+          rotate: [0, -10, 10, -5, 5, 0],
+          transition: { type: 'spring', stiffness: 400, damping: 10 },
+        });
       } else if (offset.x < -threshold) {
         onColorChange('white'); // Left = White
+        controls.start({
+          x: [offset.x, -5, 5, -2, 2, 0],
+          transition: { type: 'spring', stiffness: 800, damping: 5 },
+        });
+      } else {
+        // Snap back to origin if below threshold
+        controls.start({ x: 0, y: 0 });
       }
     } else {
       // Vertical drag
       if (offset.y > threshold) {
         onColorChange('cyan'); // Down = Cyan
+        controls.start({
+          y: [offset.y, offset.y + 20, 0],
+          scaleY: [1, 0.8, 1.1, 1],
+          transition: { duration: 1.0, ease: "easeOut" },
+        });
       } else if (offset.y < -threshold) {
         onColorChange('pink'); // Up = Pink
+        controls.start({
+          y: [offset.y, -40, 20, -10, 0],
+          scale: [1, 1.1, 1, 1.05, 1],
+          transition: { type: 'spring', stiffness: 300, damping: 8 },
+        });
+      } else {
+        // Snap back to origin if below threshold
+        controls.start({ x: 0, y: 0 });
       }
     }
   };
 
   const handleDoubleClick = () => {
     onNudge();
-    // Local pop feedback
+    // "The Heartbeat Wobble" for local nudge
     controls.start({
-      scale: [1, 1.2, 1],
-      transition: { type: 'spring', stiffness: 400, damping: 10 },
+      scale: [1, 1.4, 0.9, 1.2, 1],
+      rotate: [0, -15, 15, -10, 10, 0],
+      transition: { type: 'spring', stiffness: 500, damping: 12, mass: 1 },
     });
     if (typeof window !== 'undefined' && navigator.vibrate) {
-      navigator.vibrate(50);
+      navigator.vibrate([200, 100, 200]); // Aggressive heartbeat buzz
     }
   };
 
@@ -93,8 +121,8 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
       >
       </motion.div>
       
-      {/* Instructions overlaid faintly */}
-      <div className={`absolute bottom-12 left-0 right-0 text-center text-sm md:text-base font-black tracking-widest uppercase opacity-30 pointer-events-none z-0 ${(!isDarkMode && currentColor === 'neutral') ? 'text-white' : 'text-black'}`}>
+      {/* Instructions overlaid with mix-blend-difference to guarantee visibility against any background */}
+      <div className="absolute bottom-12 left-0 right-0 text-center text-sm md:text-base font-black tracking-widest uppercase opacity-80 pointer-events-none z-0 mix-blend-difference text-white">
         Drag to snap color &bull; Double tap to nudge
       </div>
     </div>
