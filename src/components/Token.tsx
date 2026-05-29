@@ -56,10 +56,13 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
           transition: { type: 'spring', stiffness: 400, damping: 10 },
         });
       } else if (offset.x < -threshold) {
-        onColorChange('white'); // Left = White
+        onColorChange('white'); // Left = White (Dimension Tear)
         controls.start({
-          x: [offset.x, -5, 5, -2, 2, 0],
-          transition: { type: 'spring', stiffness: 800, damping: 5 },
+          x: [offset.x, -100, 100, 0],
+          scaleX: [1, 4, 0.2, 1],
+          scaleY: [1, 0.1, 3, 1],
+          rotate: [0, 180, 0],
+          transition: { duration: 0.5, ease: 'easeInOut' },
         });
       } else {
         // Snap back to origin if below threshold
@@ -68,11 +71,11 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
     } else {
       // Vertical drag
       if (offset.y > threshold) {
-        onColorChange('cyan'); // Down = Cyan
+        onColorChange('cyan'); // Down = Cyan (Heavy Drop)
         controls.start({
-          y: [offset.y, offset.y + 20, 0],
-          scaleY: [1, 0.8, 1.1, 1],
-          transition: { duration: 1.0, ease: "easeOut" },
+          y: [offset.y, 800, -800, 0],
+          scaleY: [1, 2, 0.5, 1],
+          transition: { duration: 0.6, ease: 'backOut' },
         });
       } else if (offset.y < -threshold) {
         onColorChange('pink'); // Up = Pink
@@ -101,6 +104,17 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
     }
   };
 
+  const lastTap = useRef<number>(0);
+  const handleTap = () => {
+    const now = Date.now();
+    if (now - lastTap.current < 300) {
+      handleDoubleClick();
+      lastTap.current = 0;
+    } else {
+      lastTap.current = now;
+    }
+  };
+
   return (
     <div className="relative flex items-center justify-center w-full h-full overflow-hidden touch-none select-none">
       <motion.div
@@ -108,7 +122,7 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
         dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}
         dragElastic={0.6}
         onDragEnd={handleDragEnd}
-        onDoubleClick={handleDoubleClick}
+        onTap={handleTap}
         animate={controls}
         style={{
           backgroundColor: getTokenColor(),

@@ -42,18 +42,20 @@ export default function Home() {
         });
       } else if (newColor === 'cyan') {
         bgControls.start({
-          y: [0, 15, 0],
-          transition: { duration: 1.0, ease: 'easeInOut' },
+          scale: [1, 0.5, 1.2, 1],
+          transition: { duration: 0.6, ease: 'backOut' },
         });
       } else if (newColor === 'white') {
         bgControls.start({
-          x: [0, -15, 15, -10, 10, 0],
-          transition: { duration: 0.3 },
+          skewX: [0, 45, -45, 0],
+          skewY: [0, -20, 20, 0],
+          transition: { duration: 0.5, ease: 'easeInOut' },
         });
       } else if (newColor === 'yellow') {
         bgControls.start({
-          rotate: [0, -2, 2, -1, 1, 0],
-          transition: { duration: 0.4 },
+          rotate: [0, -15, 15, -360, 0],
+          scale: [1, 1.5, 0.5, 1],
+          transition: { duration: 0.8 },
         });
       }
     }
