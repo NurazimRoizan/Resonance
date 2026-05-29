@@ -78,11 +78,12 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
           transition: { duration: 0.6, ease: 'backOut' },
         });
       } else if (offset.y < -threshold) {
-        onColorChange('pink'); // Up = Pink
+        onColorChange('pink'); // Up = Pink (The Glitch Ascend)
         controls.start({
-          y: [offset.y, -40, 20, -10, 0],
-          scale: [1, 1.1, 1, 1.05, 1],
-          transition: { type: 'spring', stiffness: 300, damping: 8 },
+          y: [offset.y, -1000, 1000, 0],
+          scaleY: [1, 4, 4, 1],
+          scaleX: [1, 0.2, 0.2, 1],
+          transition: { duration: 0.7, ease: 'easeInOut' },
         });
       } else {
         // Snap back to origin if below threshold
@@ -91,27 +92,40 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
     }
   };
 
-  const handleDoubleClick = () => {
+  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleNudgeTrigger = () => {
     onNudge();
-    // "The Heartbeat Wobble" for local nudge
     controls.start({
       scale: [1, 1.8, 0.5, 1.5, 1],
       rotate: [0, -30, 30, -20, 20, 0],
       transition: { type: 'spring', stiffness: 500, damping: 12, mass: 1 },
     });
     if (typeof window !== 'undefined' && navigator.vibrate) {
-      navigator.vibrate([200, 100, 200]); // Aggressive heartbeat buzz
+      navigator.vibrate([200, 100, 200]);
     }
   };
 
-  const lastTap = useRef<number>(0);
-  const handlePointerDown = () => {
-    const now = Date.now();
-    if (now - lastTap.current < 300) {
-      handleDoubleClick();
-      lastTap.current = 0;
-    } else {
-      lastTap.current = now;
+  const startHold = () => {
+    holdTimer.current = setTimeout(() => {
+      handleNudgeTrigger();
+    }, 3000);
+    controls.start({
+      scale: 0.7,
+      rotate: [0, -5, 5, -5, 5, 0],
+      transition: { duration: 3.0, ease: 'linear' }
+    });
+  };
+
+  const cancelHold = () => {
+    if (holdTimer.current) {
+      clearTimeout(holdTimer.current);
+      holdTimer.current = null;
+      controls.start({
+        scale: 1,
+        rotate: 0,
+        transition: { type: 'spring', stiffness: 500, damping: 15 }
+      });
     }
   };
 
@@ -122,7 +136,10 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
         dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}
         dragElastic={0.6}
         onDragEnd={handleDragEnd}
-        onPointerDown={handlePointerDown}
+        onPointerDown={startHold}
+        onPointerUp={cancelHold}
+        onPointerCancel={cancelHold}
+        onDragStart={cancelHold}
         animate={controls}
         style={{
           backgroundColor: getTokenColor(),
@@ -137,7 +154,7 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
       
       {/* Instructions overlaid with mix-blend-difference to guarantee visibility against any background */}
       <div className="absolute bottom-12 left-0 right-0 text-center text-sm md:text-base font-black tracking-widest uppercase opacity-80 pointer-events-none z-0 mix-blend-difference text-white">
-        Drag to snap color &bull; Double tap to nudge
+        Drag to snap color &bull; Hold to nudge
       </div>
     </div>
   );

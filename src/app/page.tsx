@@ -37,8 +37,9 @@ export default function Home() {
 
       if (newColor === 'pink') {
         bgControls.start({
-          scale: [1, 1.05, 1],
-          transition: { type: 'spring', stiffness: 300 },
+          filter: ['invert(0%) blur(0px)', 'invert(100%) blur(10px)', 'invert(0%) blur(0px)'],
+          scale: [1, 1.1, 1],
+          transition: { duration: 0.7 },
         });
       } else if (newColor === 'cyan') {
         bgControls.start({
