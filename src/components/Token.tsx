@@ -35,8 +35,8 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
       prevNudge.current = partnerLastNudge;
       // "The Heartbeat Wobble" for incoming nudge
       controls.start({
-        scale: [1, 1.4, 0.9, 1.2, 1],
-        rotate: [0, -15, 15, -10, 10, 0],
+        scale: [1, 1.8, 0.5, 1.5, 1],
+        rotate: [0, -30, 30, -20, 20, 0],
         transition: { type: 'spring', stiffness: 500, damping: 12, mass: 1 },
       });
     }
@@ -95,8 +95,8 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
     onNudge();
     // "The Heartbeat Wobble" for local nudge
     controls.start({
-      scale: [1, 1.4, 0.9, 1.2, 1],
-      rotate: [0, -15, 15, -10, 10, 0],
+      scale: [1, 1.8, 0.5, 1.5, 1],
+      rotate: [0, -30, 30, -20, 20, 0],
       transition: { type: 'spring', stiffness: 500, damping: 12, mass: 1 },
     });
     if (typeof window !== 'undefined' && navigator.vibrate) {
@@ -105,7 +105,7 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
   };
 
   const lastTap = useRef<number>(0);
-  const handleTap = () => {
+  const handlePointerDown = () => {
     const now = Date.now();
     if (now - lastTap.current < 300) {
       handleDoubleClick();
@@ -122,7 +122,7 @@ export function Token({ currentColor, partnerLastNudge, onColorChange, onNudge, 
         dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}
         dragElastic={0.6}
         onDragEnd={handleDragEnd}
-        onTap={handleTap}
+        onPointerDown={handlePointerDown}
         animate={controls}
         style={{
           backgroundColor: getTokenColor(),
