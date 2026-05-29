@@ -5,9 +5,10 @@ import { motion } from 'framer-motion';
 
 interface PinEntryProps {
   onJoin: (pin: string) => void;
+  isDarkMode: boolean;
 }
 
-export function PinEntry({ onJoin }: PinEntryProps) {
+export function PinEntry({ onJoin, isDarkMode }: PinEntryProps) {
   const [pin, setPin] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,13 +46,21 @@ export function PinEntry({ onJoin }: PinEntryProps) {
           value={pin}
           onChange={handleChange}
           placeholder="0000"
-          className="w-full text-center text-7xl md:text-8xl font-black tracking-[0.2em] outline-none border-4 border-black bg-white placeholder-black/20 p-8 shadow-[8px_8px_0_0_#000000] focus:shadow-[12px_12px_0_0_#000000] focus:-translate-y-1 focus:-translate-x-1 transition-all"
+          className={`w-full text-center text-7xl md:text-8xl font-black tracking-[0.2em] outline-none border-4 p-8 transition-all focus:-translate-y-1 focus:-translate-x-1 ${
+            isDarkMode
+              ? 'border-white bg-black text-white placeholder-white/20 shadow-[8px_8px_0_0_#FFFFFF] focus:shadow-[12px_12px_0_0_#FFFFFF]'
+              : 'border-black bg-white text-black placeholder-black/20 shadow-[8px_8px_0_0_#000000] focus:shadow-[12px_12px_0_0_#000000]'
+          }`}
         />
 
         <button
           type="submit"
           disabled={pin.length !== 4}
-          className="w-full py-6 text-3xl font-black uppercase border-4 border-black bg-[#00FFFF] shadow-[8px_8px_0_0_#000000] active:shadow-[0_0_0_0_#000000] active:translate-y-2 active:translate-x-2 transition-all disabled:opacity-50 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className={`w-full py-6 text-3xl font-black uppercase border-4 transition-all active:translate-y-2 active:translate-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+            isDarkMode
+              ? 'border-white bg-white text-black shadow-[8px_8px_0_0_#FFFFFF] active:shadow-[0_0_0_0_#FFFFFF] disabled:bg-gray-800'
+              : 'border-black bg-black text-white shadow-[8px_8px_0_0_#000000] active:shadow-[0_0_0_0_#000000] disabled:bg-gray-300'
+          }`}
         >
           Connect
         </button>

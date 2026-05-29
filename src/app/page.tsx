@@ -14,6 +14,7 @@ const colorMap: Record<ResonanceColor, string> = {
 
 export default function Home() {
   const [pin, setPin] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const { myState, partnerState, isConnected, updateColor, sendNudge } = useResonance(pin);
 
   useEffect(() => {
@@ -24,8 +25,18 @@ export default function Home() {
 
   if (!pin) {
     return (
-      <main className="w-screen h-screen flex items-center justify-center bg-white transition-colors duration-500">
-        <PinEntry onJoin={setPin} />
+      <main className={`w-screen h-screen flex items-center justify-center transition-colors duration-500 relative ${isDarkMode ? 'bg-black text-white' : 'bg-white text-black'}`}>
+        <button 
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          className={`absolute top-6 right-6 font-black uppercase text-xs tracking-widest px-4 py-2 border-4 transition-all active:translate-y-1 active:translate-x-1 ${
+            isDarkMode 
+              ? 'bg-black text-white border-white shadow-[4px_4px_0_0_#FFF] active:shadow-[0_0_0_0_#FFF]' 
+              : 'bg-white text-black border-black shadow-[4px_4px_0_0_#000] active:shadow-[0_0_0_0_#000]'
+          }`}
+        >
+          {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+        </button>
+        <PinEntry onJoin={setPin} isDarkMode={isDarkMode} />
       </main>
     );
   }
