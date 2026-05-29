@@ -3,14 +3,7 @@
 import { useState, useEffect } from 'react';
 import { PinEntry } from '@/components/PinEntry';
 import { Token } from '@/components/Token';
-import { useResonance, ResonanceColor } from '@/hooks/useResonance';
-
-const colorMap: Record<ResonanceColor, string> = {
-  white: '#FFFFFF',
-  pink: '#FF007F',
-  cyan: '#00FFFF',
-  yellow: '#FFFF00',
-};
+import { useResonance } from '@/hooks/useResonance';
 
 export default function Home() {
   const [pin, setPin] = useState<string | null>(null);
